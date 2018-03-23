@@ -2,7 +2,8 @@ package com.ajeet.config;
 import java.util.Properties;
 
 import javax.sql.DataSource;
- 
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,13 +34,30 @@ public class HibernateConfiguration {
         return sessionFactory;
      }
      
-    @Bean(name = "dataSource")
+   /* @Bean(name = "dataSource")
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
         dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
         dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+        return dataSource;
+    }*/
+    
+    /* BasicDataSource provide the connection pooling but DriverManagerDataSource does not provide connection pooling
+     * In case of DriverManagerDataSource Database connection open and close for every transaction
+     *  
+     */
+    
+   
+    @Bean(name = "dataSource")
+    public DataSource dataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
+        dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
+        dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
+        dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+        dataSource.setMaxActive(environment.getRequiredProperty("max.active", Integer.class));
         return dataSource;
     }
      
